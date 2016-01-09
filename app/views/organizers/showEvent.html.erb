@@ -1,0 +1,294 @@
+
+<div class="container-fluid wow fadeInLeft animated">
+
+	
+	<div class="col-lg-11 center-block"> 
+	<br>
+	<div class="panel panel-default  panel-border-black">
+			
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-lg-10">
+						<h3>Details for <span class='highlight'><b><a href="https://www.google.com/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=<%= @event.name%>"><%= @event.name %></a></b></span></h3>
+					</div>
+					<div class="col-lg-2">
+
+						<ul class="list-unstyled list-inline pull-left">
+							<li><a href="<%= calendar_path  %>" class="btn btn-primary">Back to calendar</a></li>
+						</ul>
+					</div>
+				</div>
+				<hr>
+
+				<div class="col-md-6">
+					<p> 
+						 
+						<h4>Start time: <%= pretty_date(@event.start_date)  %></h4> 
+						<% if @event.end_date != nil %>
+						<h4>End time: <%= pretty_date(@event.end_date)  %></h4> 
+						<% end %>
+						<h4>City: <%= @event.city  %>, <%= @event.state  %></h4> 
+						<h4>Address: <%= @event.address %></h4>
+						<h4>Zipcode: <%= @event.zipcode  %></h4>
+						<h4>Guest Count: <%= @event.guestcount.to_s  %></h4>
+					</p>
+					<br>
+					<hr>
+					<ul class="list-inline">
+					<li>
+						<div class="btn-group">
+						  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						    Event Options <span class="caret"></span>
+						  </button>
+						  <ul class="dropdown-menu">
+						    <li>
+							    <% unless @event.confirmed == true %>
+								<a  href="#" data-toggle="modal" data-target="#addserviceModal" >
+									Add a service
+								</a>
+								<% end %>
+							</li>
+						    <li>
+						    	<a  href="#" data-toggle="modal" data-target="#viewservicesModal" >
+									View services
+								</a>
+							</li>
+							<li>
+								<a href='#'type='button' data-toggle='modal' data-target='#vendorsModal'>
+									Local Vendors
+								</a>
+							</li>
+						    <li>
+						    	
+						    </li>
+						  </ul>
+						</div>
+					</li>
+							<% if @event.confirmed == true %>
+								<% disable = "disabled"  %>
+								<% buttontext = "Confirmed" %>
+							<% else %>
+								<% buttontext = "Confirm Event" %>
+							<% end %>
+
+							<li>
+								<%= form_tag("/api/event/confirm/#{@event.id}", :method => "post", :class => "inline-block") do %>
+									<%= submit_tag("#{buttontext}", :class => "btn btn-success #{disable}") %>
+								<% end %>
+							</li>
+					
+					<br>
+					
+
+					
+					
+				</div>
+
+
+
+				<div class="col-lg-6">
+				<style>
+				.nav-tabs>li>a {
+					padding: 10px;
+				}
+				.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+					background-color:#0E8FAB;
+					color: white;
+				}
+				</style>
+				  <!-- Nav tabs -->
+				  <ul class="nav nav-tabs" role="tablist">
+				  	<li role="presentation" class="active"><a href="#map" aria-controls="map" role="tab" data-toggle="tab">Map</a></li>
+				    <li role="presentation"><a href="#comments" aria-controls="comments" role="tab" data-toggle="tab">Comments</a></li>
+				    
+				  </ul>
+
+				  <!-- Tab panes -->
+				  <div class="tab-content">
+				    <div role="tabpanel" class="tab-pane " id="comments">
+				    	<div id="commentList">
+							<div class="react_comments">
+								<%= react_component('CommentBox', props = {:url => "/api/events/#{@event.id}/comments", :pollInterval => 1000}) %>
+							</div>	
+						</div>
+				    </div>
+				    <div role="tabpanel" class="tab-pane active" id="map">
+				    	<img src="https://maps.googleapis.com/maps/api/staticmap?markers=color:red%7Clabel:S%7C<%= @event.address%>&size=600x300&maptype=roadmap&zoom=15" class="img img-thumbnail">
+				    </div>
+				  </div>
+
+				</div>
+			 </div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="addserviceModal" tabindex="-1" role="dialog" aria-labelledby="addServiceModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="addServiceModalLabel">Service providers available for <%= @event.name  %></h4>
+      </div>
+      <div class="modal-body">
+      	<ul class="list-unstyled">
+      		<% services = Service.all %>
+      		<% services.each do |serv| %>
+      			<li>
+      				<h5><%= serv.name  %></h5>
+
+      				<ul class="list-inline">
+	      					<% vendors = @vendors %>
+	      					<% vendors.each do |vendor| %>
+	      					<% @disable = "btn-default" %>
+								<% if vendor.services.any? { |item| item[:name] == serv.name } %>
+									<% @event.confirmed_services.each do |conserv| %>
+										<% association = AssociatedService.find_by(:id => conserv.associated_service_id) %>
+										
+										<% if association.user_id  == vendor.id %>
+											<% @disable = "btn-success disabled" %>	
+											<% break %>
+										<% end %>
+									<% end %>
+									<li> 
+										<button class="btn <%= @disable %> btn-sm vendorShow " data-hook="<%= serv.name  %>"id = "provider:<%= vendor.id  %>"> 
+											<%= vendor.profile.name  %>	
+										</button> 
+									</li>
+								<% end %>
+	      					<% end %>
+	      			</ul>
+      			</li>
+      		<% end %>
+      	</ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="viewservicesModal" tabindex="-1" role="dialog" aria-labelledby="viewServicesModalLabel">
+  <div class="modal-dialog " role="document">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="viewServicesModalLabel">Services scheduled</h4>
+      </div>
+      <div class="modal-body confirmedServicesList">
+      		<% @event.confirmed_services.each do |serv| %>
+      			<li data-hook="service:<%= serv.id %>" class = "fancify">
+      			<% if @event.confirmed == false %>
+      			<%= link_to 'X', "/api/event/#{@event.id}/deleteconfirmedservice/#{serv.id}", data: { :confirm => 'Are you sure?', method: :delete}, remote: true , :class => "btn btn-sm btn-danger pull-right btn-edit trig", :id => serv.associated_service.user.profile.name   %>
+      			<% end %>
+      						<% association = AssociatedService.find_by(:id => serv.associated_service_id) %>
+	      					<h3>
+	      					<img src="<%= User.find_by(:id => association.user_id).profile.imageurl%>" class="img img-thumbnail" width="10%">
+	      					<span class="highlight"><a href="/profiles/<%= User.find_by(:id => association.user_id).id %>"><%= User.find_by(:id => association.user_id).profile.name  %></a></span>
+	      					<small><%= Service.find_by(:id => association.service_id).name  %></small></h3>
+	      					
+	      			
+	      			
+
+      			</li>
+      		<% end %>
+      </div>
+      <div class="modal-footer">
+        <a href="#" data-toggle="tooltip" title="Some tooltip text!"><button type="button" class="btn btn-primary" data-dismiss="modal">Close</button></a>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+	
+	<div class="modal fade" id="viewVendorModal" tabindex="-1" role="dialog" aria-labelledby="viewVendorModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="vendorModalLabel"></h4>
+      </div>
+      <div class="modal-body center-block">
+      	<h5>
+      		
+      			Owner: <span id="vendorOwnerLabel"></span>
+      		
+      	</h5>
+      	<h5>
+      		
+      			Email: <span id="vendorEmailLabel"></span>
+      		
+      	</h5>
+      	<h5>
+      			Service Selected:
+      			<ul style="list-style-type: none;margin-left:15px;" id="vendorServicesList"></ul>
+      	</h5>
+
+
+
+      	
+      </div>
+      <div class="modal-footer">
+      	<button class="addProviderButton btn btn-default" id="" data-hook="addProvider">Add this provider</button>
+
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<span data-hook="eventIDholder" id= "<%= @event.id %>" ></span>
+	
+
+<script>
+	$('#myTabs a').click(function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+})
+	function assignColor() {
+		$(".btn-edit").hover(
+			function(){$(this).parent().css("background-color","rgba(243,57,57,0.5)");
+		},
+			function(){$(this).parent().css("background-color", "")}
+		);
+	}
+	assignColor()
+</script>
+
+<div class="modal fade" id="vendorsModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Vendors In Your Area</h4>
+      </div>
+      <div class="modal-body">
+      <ul class="list-unstyled">
+					<% @vendors.each do |vendor| %>
+						<li>
+							<h4 style="display:inline;"> 
+								<a href="<%= profile_path(vendor.id)  %>" ><b><%= vendor.name  %></b>
+								</a>
+								<% if vendor.name.present? %>
+									<small><%= vendor.profile.name  %></small>
+								<% end %>
+							</h4>
+						</li>
+						<hr>
+					<% end %>
+				</ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script>
+function handleConfirm(event) {
+		$.post("/api/event/confirm/"+event.target.id)
+	}
+</script>

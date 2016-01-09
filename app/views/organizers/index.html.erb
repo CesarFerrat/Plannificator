@@ -1,0 +1,96 @@
+
+<div id="status">
+</div>
+
+<div class="container-fluid wow fadeInLeft animated">
+	<div  class="col-lg-12">
+		<div class="row">
+			<div class="col-xl-8 col-lg-8 col-md-8 col-sm-8" >
+				<h2>Event's for <span class="highlight"><%= pretty_date2(@date)%></span></h2>
+			</div>
+			<div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">
+			<br>
+        <ul class="list-unstyled list-inline pull-left">
+				  <li><a href="<%= organizers_addevent_path  %>" class= "btn btn-primary btn-md "style="color:white;">Add New Event</a></li>
+          <li><a href="<%= calendar_path  %>" class= "btn btn-primary btn-md"style="color:white;">Back to Calendar</a></li>
+        </ul>
+			</div>
+		</div>
+	<hr>
+	<br>				
+						<% if @events.present? %>
+						<% columncounter = 0 %>
+						<% @events.each do |event| %>
+						<% if columncounter  == 0 %>
+							<div class="row">
+							
+						
+						<% end %>
+						<% columncounter = columncounter + 1 %>
+						
+						<div class="col-lg-3" style="position:relative;">
+							
+							<style>
+								.btn-edit {
+									position: absolute;
+									top: 15px;
+									right: 28px;
+								}
+							</style>
+							
+								<div class="panel panel-default panel-border-grey ex1 text-center justify-block box-shadow  " id="<%= event.id  %>">
+								<%= link_to 'X', "/organizer/deleteevent/#{event.id}", data: { :confirm => 'Are you sure?', method: :delete}, remote: true , :class => "btn btn-sm btn-danger btn-edit", :style =>"z-index: 30;"   %>
+								<a href="/organizers/showevent/<%= event.id %>" style="color:black; z-index:30;">
+									<div class="panel-body">
+										<h4><%= event.name  %> <br> <small><%= event.venue  %></small></h4>
+										<hr>
+										<%= pretty_date(event.start_date)  %> <br>
+										<%= event.address %><br>
+										<%= event.city  %>, <%= event.state  %> <%= event.zipcode  %> <br>
+									</div>
+								</div>
+							</a>
+						</div>
+						
+						
+							<% if columncounter == 4 %>
+								
+								</div>
+							<%  columncounter = 0 %>
+							<% end %>
+						<% end %>
+						<% else %>
+							<p>
+								There are no events for today. 
+								<% if current_user.role == "organizer" %>
+									You can add one by by clicking <a href="/organizes/addevent">Add New Event!</a>
+								<% end %>
+							</p>
+						<% end %>
+						
+					</div>
+					
+			
+			</div>
+
+		</div>
+	</div>
+	
+</div>
+
+
+
+<script>
+ 
+
+	$(".btn-edit").hover(
+		function(){$(this).parent().css("background-color","rgba(243,57,57,0.5)");
+	},
+		function(){$(this).parent().css("background-color", "")}
+	);
+	$(".ex1").hover(
+		function(){$(this).css("background-color","rgba(144,216,243,0.5)");
+	},
+		function(){$(this).css("background-color", "")}
+	);
+</script>

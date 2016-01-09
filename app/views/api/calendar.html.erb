@@ -1,0 +1,119 @@
+<div class="container wow fadeInLeft animated">
+	<div class="row">
+		<div class="col-lg-9">
+			<h2>Events <span class="highlight">Calendar</span></h2>
+		</div>
+		<div class="col-lg-3" data-hook="buttonDiv">
+			
+		</div>
+	</div>
+	<hr>
+</div>
+</div>
+<div class="container">
+	<div class="col-lg-6 center-block text-center">
+		<div id="loading" style="position:absolute; top: 35px;">
+			<%= image_tag("loading.gif")%>
+		</div>
+	</div>
+</div>
+<div class="container wow fadeInLeft animated calendar">
+	<div class="row">
+		<div class="col-xl-12 col-lg-12 " >
+			<!-- <div id="cool"> -->
+				<div id='calendar' ></div>
+			<!-- </div>	 -->
+		</div>
+	</div>
+</div>
+
+
+
+<% if current_user.role == "vendor" %>
+<script>
+$('[data-hook~="buttonDiv"]').append(" <br><a class='btn btn-primary text-right' href='<%= '/vendor/' + Date.today.to_s %>'>Today's Events</a>");
+$('[data-hook~="buttonDiv"]').append(" <a class='btn btn-primary text-right' href='<%= '/vendor/events/servicing' %>'>Events Servicing</a>");
+
+
+$(document).ready(function() {
+
+    // page is now ready, initialize the calendar...
+
+    $('#calendar').fullCalendar({
+    	
+        // put your options and callbacks here
+        eventSources: [
+
+		        // your event source
+		        {
+		            url: '/api/events/calendar_get', // use the `url` property
+		            color: 'rgba(248,107,22,0.8)',    // an option!
+		            textColor: 'white',  // an option!
+		            borderColor: 'lightgrey'
+
+		        }
+
+		        // any other sources...
+
+		    ],
+
+		dayClick: function(date, jsEvent, view) {
+	        window.location.replace("/vendor/"+ date.format())
+	    },
+	    loading: function(bool){
+    		if (bool){
+    			
+    		
+    		} else{
+    			$('#loading').hide();
+    			
+    			$('#calendar').fullCalendar('render');
+    		}
+    	},
+
+		   
+    })
+
+});
+</script>
+<% elsif current_user.role == "organizer" %>
+
+
+
+<script>
+$('[data-hook~="buttonDiv"]').append("<br><a class='btn btn-primary text-right'  href='<%= organizers_addevent_path %>'>Add Event</a> ");
+$('[data-hook~="buttonDiv"]').append("<a class='btn btn-primary text-right' ' href='<%= '/organizer/' + Date.today.to_s %>'>Today's Events</a>");
+
+
+$(document).ready(function() {
+
+    // page is now ready, initialize the calendar...
+
+    $('#calendar').fullCalendar({
+    	
+        // put your options and callbacks here
+        eventSources: [
+
+		        // your event source
+		        {
+		            url: '/api/events/calendar_get', // use the `url` property
+		            color: 'rgba(248,107,22,0.8)',    // an option!
+		            textColor: 'white',  // an option!
+		            borderColor: 'lightgrey'
+
+		        }
+
+		        // any other sources...
+
+		    ],
+
+		dayClick: function(date, jsEvent, view) {
+	        window.location.replace("/organizer/"+ date.format())
+	    }
+
+		   
+    })
+
+});
+</script>
+<% end %>

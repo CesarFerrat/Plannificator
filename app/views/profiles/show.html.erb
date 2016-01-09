@@ -1,0 +1,66 @@
+
+<div class="container-fluid wow fadeInLeft animated">
+
+
+	<div class="col-lg-12">
+	<br>
+	<div class="panel panel-default  panel-border-black">
+			<div class="panel-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-xl-9 col-lg-8 col-md-8 col-sm-12">
+							<h2><%= @user.name  %> <small> <%= @profile.name  %> </small></h2>
+						</div>
+						<div class="col-xl-3 col-lg-4 col-md-4 col-sm-12">
+						<br>
+							<ul class="list-inline">
+							<% if current_user.id == @profile.user_id %>
+								<li><a class="btn btn-primary" data-toggle="modal" data-target="#myModal">Edit Profile</a></li>
+								<li><a class="btn btn-primary" href="<%= calendar_path %>">Back to calendar</a></li>
+							<% end %>
+							</ul>
+						</div>
+					</div>
+					<hr>
+						<div class="row">
+							<div class="col-lg-6 col-sm-12 col-xs-12">
+								<div class="row">
+									<div class="col-sm-4 col-xs-4">
+										<img src="<%= @user.profile.imageurl %>"  class="img img-rounded" width = "100%"%>
+									</div>
+									<div class="col-sm-8 col-xs-8">
+										<h1><%= @profile.name %> <br> <small><%= @profile.message  %></small></h1>
+										<h3><%= @profile.owner %><small> Owner</small> </h3>
+										<h4><a href="http://<%= @profile.weburl %>"><%= @profile.weburl%></a></h4>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-12 col-xs-12">
+									<h3><%= number_to_phone(@profile.phone.to_i) %></h3>
+									<h4><a href="mailto:"><%= @profile.email %></a></h4>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6 col-xs-12">
+								<img src="https://maps.googleapis.com/maps/api/staticmap?markers=color:red%7Clabel:S%7C<%= @profile.address%><%=@profile.city%><%=@profile.state%>&size=600x300&maptype=roadmap&zoom=15" class="img img-thumbnail" width="100%">
+							</div>
+						</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Edit your profile</h4>
+      </div>
+      <div class="modal-body">
+		<%= render "./partials/profile_form"  %>
+      </div>
+    </div>
+  </div>
+</div>

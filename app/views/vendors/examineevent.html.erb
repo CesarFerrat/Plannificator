@@ -1,0 +1,132 @@
+
+<div class="container-fluid wow fadeInLeft animated">
+
+	 
+	<div class="col-lg-11 center-block">
+	<br>
+	<div class="panel panel-default  panel-border-black">
+			<div class="panel-body">
+				<div class="row">
+						<div class="col-md-10" >
+						<h3>Details for <span class='highlight'><b><a href="https://www.google.com/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=<%= @event.name%>"><%= @event.name %></a></b></span></h3>	
+						</div>
+						<div class="col-md-2">
+							<ul class="list-inline">
+								<a class="btn btn-primary" href="<%= calendar_path  %>">Back to calendar</a>
+							</ul>
+						</div>
+					</div>
+					<hr>
+				<div class="col-md-6">
+					<p> 
+						<h4>Organizer: <a href="/profiles/<%= @organizer.id%>"><%= @organizer.name %></a></h4>
+						
+						<h4>Start time: <%= pretty_date(@event.start_date)  %></h4> 
+						<% if @event.end_date != nil %>
+							<h4>End time: <%= pretty_date(@event.end_date)  %></h4> 
+						<% end %>
+						<h4>City: <%= @event.city  %>, <%= @event.state  %></h4> 
+						<h4>Address: <%= @event.address %></h4>
+						<h4>Zipcode: <%= @event.zipcode  %></h4>
+						<h4>Guest Count: <%= @event.guestcount.to_s  %></h4>
+					</p>
+					<br>
+					<hr>
+					<button  data-toggle="modal" data-target="#myModal" class="btn btn-default">
+						View Service providers
+					</button>
+					<% unless @event.confirmed %>
+					<%= link_to 'Offer my services!', add_comment_path( :text => 'My company would like to offer our services for this event!'), data: { :confirm => 'Are you sure?', method: :post, toggle: :tab }, remote: true , :class => "btn btn-sm btn-success btn-edit offer offerbtn", :style =>"z-index: 30;", :id => @event.id   %>
+					<script>
+					function checkForFalse(){
+						console.log('initiated')
+						$.get('/api/events/'+<%= @event.id %>+'/check_confirmed', handleResponse)
+
+						function handleResponse(data){
+							if (data.response === "confirmed") {
+								$('.offerbtn').addClass('disabled')
+								$('.offerbtn').removeClass('btn-success')
+								$('.offerbtn').addClass('btn-danger')
+								$('.offerbtn').text('Event Confirmed')
+								setTimeout(function(){location.reload();}, 2000)
+							}
+						}
+					}
+					setInterval(checkForFalse, 2000)
+					</script>
+					<% end %>
+				</div>
+				
+				<style>
+				.nav-tabs>li>a {
+					padding: 10px;
+				}
+				.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+					background-color:#0E8FAB;
+					color: white;
+				}
+				</style>
+				<div class="col-md-6">
+						<ul class="nav nav-tabs" role="tablist">
+							<li role="presentation" class="active"><a href="#comments" aria-controls="comments" role="tab" data-toggle="tab">Comments</a></li>
+						  	<li role="presentation" ><a href="#map" aria-controls="map" role="tab" data-toggle="tab">Map</a></li>
+						 </ul>
+
+					  <!-- Tab panes -->
+					  <div class="tab-content">
+					   <div role="tabpanel" class="tab-pane" id="map">
+					    	<img src="https://maps.googleapis.com/maps/api/staticmap?markers=color:red%7Clabel:S%7C<%= @event.address%>&size=600x300&maptype=roadmap&zoom=15" class="img img-thumbnail">
+					    </div>
+					    <div role="tabpanel" class="tab-pane active" id="comments">
+					    	<div id="commentList">
+								<div class="react_comments">
+									<%= react_component('CommentBox', props = {:url => "/api/events/#{@event.id}/comments", :pollInterval => 1000}) %>
+								</div>	
+							</div>
+					    </div>
+					  </div>
+					</div>
+				</div>
+			</div>
+		</div>
+			
+	</div>
+	
+</div>
+	
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Service providers schdeduled for <%= @event.name  %></h4>
+      </div>
+      <div class="modal-body">
+      	<%if @event.confirmed_services.count < 1 %>
+      		<p>
+      			This event has yet to schedule any services. Offer your services through the comments tab or by clicking on offer my service!
+      		</p>
+      	<% end %>
+      		<% @event.confirmed_services.each do |serv| %>
+      			<p class="lead">
+	      				
+	      					<% association = AssociatedService.find_by(:id => serv.associated_service_id) %>
+	      					<img src="<%= User.find_by(:id => association.user_id).profile.imageurl%>" class="img img-thumbnail" width="10%">
+	      					<%= Service.find_by(:id => association.service_id).name  %> 
+							<span class="highlight"> <a href='/profiles/<%= association.user_id%>'><%= User.find_by(:id => association.user_id).profile.name  %></a> </span>
+	      					
+	      					
+	      			
+	      			</p>
+      		<% end %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

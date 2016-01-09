@@ -1,0 +1,39 @@
+// Place all the styles related to the site controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+#logo-text {
+	font-size:80px;
+	text-align: center;
+	color: #ffffff;
+}
+.calendar {
+ 	max-width: 900px;
+ 	background-color: rgba(247, 238, 223, 0.5);
+ 	padding: 30px;
+ 	border: solid 1px;
+ 	border-radius: 8px;
+}
+td.fc-widget-content.fc-day{
+  -webkit-transition: background-color 0.3s ease-out;
+  -moz-transition: background-color 0.3s ease-out;
+  -o-transition: background-color 0.3s ease-out; 
+}
+td.fc-widget-content.fc-day:hover {
+	background-color:rgba(144,216,243,0.5);
+}
+#calendar {
+	background-color:white;
+	border-radius: 8px;
+	padding: 10px;
+	border: lightgrey double 4px;
+}
+@media only screen and (max-device-width: 480px) {
+	section.homepage{
+		height:100%;
+	}
+}
+.slidy {
+	-webkit-transition:all 200ms ease-in;
+	-moz-transition:all 200ms ease-in;
+	transition:all 200ms ease-in;
+}

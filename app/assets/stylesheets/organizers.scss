@@ -1,0 +1,146 @@
+–// Place all the styles related to the organizers controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.light-blue {
+	background-color: rgba(144,216,243,0.2)
+}
+.light-red {
+	background-color: rgba(247, 238, 223, 0.5)
+}
+.panel-border-black {
+
+	border: 1px solid black;
+}
+.panel-border-grey {
+	border: 1px solid grey;
+
+}
+.fancify {
+    -webkit-transition: background-color 0.6s ease-out;
+  -moz-transition: background-color 0.6s ease-out;
+  -o-transition: background-color 0.6s ease-out; 
+
+}
+li.fancify {
+  list-style-type: none;
+  border-radius: 10px;
+  margin-bottom:5px;
+  margin-top:5px;
+
+}
+.ex1 { 
+	-webkit-transition: background-color 0.6s ease-out;
+	-moz-transition: background-color 0.6s ease-out;
+ 	-o-transition: background-color 0.6s ease-out; 
+
+ 	min-height: 213px;
+  border-radius: 25px;
+} 
+.btn {
+    -webkit-transition: background-color 0.6s ease-out;
+  -moz-transition: background-color 0.6s ease-out;
+  -o-transition: background-color 0.6s ease-out; 
+}
+.ex1:hover {
+	background-color: rgba(144,216,243,0.5)
+}
+
+// .hovercontrol {
+//   -webkit-transition: background-color 0.6s ease-out;
+//   -moz-transition: background-color 0.6s ease-out;
+//   -o-transition: background-color 0.6s ease-out; 
+// }
+// .hovercontrol:hover {
+//   background-color: rgba(144,216,243,0.3)
+
+// }
+
+button > a {
+	color: white;
+}
+#header {
+	padding-top:20px;
+	
+}
+hr {
+	border-color: lightgrey;
+	margin-bottom: 5px;
+	margin-top: 5px;
+}
+.btn-wide {
+	width: 100%;
+}
+.negative-margin {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+ #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 400px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+
+      .pac-container {
+        font-family: Roboto;
+      }
+
+      #type-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        padding: 5px 11px 0px 11px;
+      }
+
+      #type-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+
+
+      #locationField, #controls {
+        position: relative;
+        width: 480px;
+      }
+    
+     
+      #address {
+        border: 1px solid #000090;
+        background-color: #f0f0ff;
+        width: 480px;
+        padding-right: 2px;
+      }
+      #address td {
+        font-size: 10pt;
+      }
+      .field {
+        width: 99%;
+      }
+      .slimField {
+        width: 80px;
+      }
+      .wideField {
+        width: 200px;
+      }
+      #locationField {
+        height: 20px;
+        margin-bottom: 2px;
+      }
+
+.requirefield {
+  position:relative;
+}
+.placement {
+  position:absolute;
+  right: 20px;
+  top: 10px;
+}
